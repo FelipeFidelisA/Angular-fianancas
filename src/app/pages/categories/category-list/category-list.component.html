@@ -1,1 +1,58 @@
-<p>category-list works!</p>
+<nav class="mb-5">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
+        <li class="breadcrumb-item active">Categorias</li>
+    </ol>
+</nav>
+
+<div class="row mb-4">
+    <div class="col-md">
+        <h1 class="h2 border-left pl-2">
+            Categorias
+        </h1>
+    </div>
+    <div class="col-md">
+        <a routerLink="new" class="btn btn-success float-right">+ Nova categoria</a>
+    </div>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr class="bg-primary text-white">
+            <th>Categoria</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <strong>Lazer</strong><br>
+                <small>Cinema, vídeo, jogos, etc.</small>
+            </td>
+            <td>
+                <button [routerLink]="[12, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
+                <button (click)="('Excluir')" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Lazer</strong><br>
+                <small>Cinema, vídeo, jogos, etc.</small>
+            </td>
+            <td>
+                <button [routerLink]="[12, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
+                <button (click)="('Excluir')" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>Lazer</strong><br>
+                <small>Cinema, vídeo, jogos, etc.</small>
+            </td>
+            <td>
+                <button [routerLink]="[12, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
+                <button (click)="('Excluir')" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
+            </td>
+        </tr>
+    </tbody>
+</table>
