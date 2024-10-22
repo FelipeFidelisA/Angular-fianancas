@@ -18,7 +18,7 @@ export class CategoryService {
   getAll(): Observable<Category[]> {
     return this.http.get<Category[]>(this.apiPath).pipe(
       catchError(this.handleError),
-      map(this.jsonDAtaToCategory)
+      map(this.jsonDataToCategories)
     );
   }
 
@@ -27,14 +27,14 @@ export class CategoryService {
 
     return this.http.get(url).pipe(
       catchError(this.handleError),
-      map(this.jsonDAtaToCategory)
+      map(this.jsonDataToCategory)
     );
   }
 
   create(category: Category): Observable<Category> {
     return this.http.post(this.apiPath, category).pipe(
       catchError(this.handleError),
-      map(this.jsonDAtaToCategory)
+      map(this.jsonDataToCategory)
     );
   }
 
@@ -56,13 +56,13 @@ export class CategoryService {
 
 
 
-  private jsonDAtaToCategories(jsondata: any[]): Category[] {
+  private jsonDataToCategories(jsonData: any[]): Category[] {
     const categories: Category[] = [];
     jsonData.forEach(element => categories.push(element as Category));
     return categories;
   }
 
-  private jsonDAtaToCategory(jsondata: any): Category {
+  private jsonDataToCategory(jsondata: any): Category {
     return jsondata as Category;
   }
 
