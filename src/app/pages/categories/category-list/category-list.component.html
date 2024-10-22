@@ -11,7 +11,7 @@
             Categorias
         </h1>
     </div>
-    <div class="col-md">
+    <div class="col-md d-flex justify-content-end">
         <a routerLink="new" class="btn btn-success float-right">+ Nova categoria</a>
     </div>
 </div>
@@ -24,35 +24,16 @@
         </tr>
     </thead>
     <tbody>
-        <tr>
+        <tr *ngFor="let category of categories">
             <td>
-                <strong>Lazer</strong><br>
-                <small>Cinema, vídeo, jogos, etc.</small>
+                <strong>{{category.name}}</strong><br>
+                <small>{{category.description}}</small>
             </td>
             <td>
-                <button [routerLink]="[12, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
-                <button (click)="('Excluir')" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <strong>Lazer</strong><br>
-                <small>Cinema, vídeo, jogos, etc.</small>
-            </td>
-            <td>
-                <button [routerLink]="[12, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
-                <button (click)="('Excluir')" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
+                <button [routerLink]="[category.id, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
+                <button (click)="deleteCategory(category)" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
             </td>
         </tr>
-        <tr>
-            <td>
-                <strong>Lazer</strong><br>
-                <small>Cinema, vídeo, jogos, etc.</small>
-            </td>
-            <td>
-                <button [routerLink]="[12, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
-                <button (click)="('Excluir')" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
-            </td>
-        </tr>
+
     </tbody>
 </table>
