@@ -32,6 +32,10 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     private route: ActivatedRoute
   ) { }
 
+  get nameControl() {
+    return this.categoryForm.get('name');
+  }
+  
   ngOnInit(): void {
     this.setCurrentAction();
     this.buildCategoryForm();
@@ -40,6 +44,17 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
 
   ngAfterContentChecked(): void {
     this.setPageTitle();
+  }
+
+
+
+  submitForm() {
+    this.submitting = true;
+
+    if (this.currentAction == 'new')
+      this.createcategory();
+    else
+      this.updateCategory();
   }
 
   private setCurrentAction() {
@@ -85,5 +100,44 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
       const categoryName = this.category.name;
       this.pageTitle = `Editando categoria: ${categoryName}`;
     }
+  }
+
+  private createcategory() {
+    const category: Category = Object.assign(new Category(0,'',''), this.categoryForm.value);
+    this.categoryService.create(category).subscribe(
+      (createdCategory) => {
+        this.actionForSuccess(createdCategory);
+      },
+      (error) => {
+        this.actionsForError(error);
+      }
+    );
+  }
+  private updateCategory() {
+    const category: Category = Object.assign(new Category(0,'',''), this.categoryForm.value);
+
+    this.categoryService.update(category).subscribe(
+      () => this.actionForSuccess(category),
+      (error) => this.actionsForError(error)
+    );
+  }
+
+  private actionForSuccess(category: Category) {
+    toastr.success(`Categoria ${category.name} foi processada com sucesso!`);
+
+    this.router.navigateByUrl('categories', { skipLocationChange: true }).then(
+      () => this.router.navigate(["categories", category.id, 'edit'])
+    );
+  }
+
+  private actionsForError(error: any) {
+    toastr.error('Ocorreu um Erro ao tentar a sua solicitação!')
+
+    this.submitting = false;
+
+    if (error.status == 422) {
+      this.serverErrorMessages = JSON.parse(error._body).errors;
+    } else
+      this.serverErrorMessages = ['Falha na comunicação com o servidor. Por favor, tente novamente mais tarde.'];
   }
 }
