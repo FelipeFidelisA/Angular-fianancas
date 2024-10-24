@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <div class="alert alert-danger mb-4" *ngIf="serverErrorMessages">
+    <div class="alert alert-danger mt-3" *ngIf="serverErrorMessages">
         <strong>Erro no servidor:</strong>
         <ul>
             <li *ngFor="let error of serverErrorMessages">{{error}}</li>
