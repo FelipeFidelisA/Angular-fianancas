@@ -10,6 +10,7 @@ import * as toastr from 'toastr';
   templateUrl: './entry-form.component.html',
   styleUrls: ['./entry-form.component.css']
 })
+
 export class EntryFormComponent implements OnInit, AfterContentChecked {
   currentAction: string = '';
   entryForm!: FormGroup;
@@ -22,12 +23,23 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     mask: 'R$ 000.000,00',
   };
 
+  ptBr: any = {
+    firstDayOfWeek: 1,
+    dayNames: ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'],
+    dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+    dayNamesMin: ['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sa'],
+    monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
+    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+    today: 'Hoje',
+    clear: 'Limpar'
+};
+
   constructor(
     private entryService: EntryService,
     private router: Router,
     private formBuilder: FormBuilder,
     private route: ActivatedRoute
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.setCurrentAction();
@@ -85,8 +97,8 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private setPageTitle() {
-    this.pageTitle = this.currentAction === 'new' 
-      ? 'Cadastro de novo lançamento' 
+    this.pageTitle = this.currentAction === 'new'
+      ? 'Cadastro de novo lançamento'
       : `Editando Lançamento: ${this.entry.name}`;
   }
 
