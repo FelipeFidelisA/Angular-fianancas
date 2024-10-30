@@ -27,14 +27,15 @@
                 <!-- Tipo -->
                 <div class="form-group col-md-2">
                     <label for="type">Tipo:</label>
-                    <select name="type" id="type" formControlName="type" class="form-control">
-                        <option *ngFor="let option of typeOptions" [value]="option.value"> {{ option.text }} </option>
+                    <select name="type" id="type" formControlName="type" class="form-control" (change)="onTypeChange($event)">
+                        <option *ngFor="let option of typeOptions" [value]="option.value">{{ option.text }}</option>
                     </select>
                     <div class="text-danger" *ngIf="entryForm.get('type')?.invalid && entryForm.get('type')?.touched">
                         <div *ngIf="entryForm.get('type')?.errors?.['required']">Dado obrigatório</div>
                     </div>
                 </div>
-
+                
+                
 
                 <!-- Nome -->
                 <div class="form-group col-md-5">
@@ -129,6 +130,5 @@
     </div>
 
     <button [disabled]="submitting || entryForm.invalid" type="submit"
-        class="btn btn-primary btn-lg float-end mt-3">Salvar</button>
-        
+        class="btn btn-primary btn-lg float-end mt-3">Salvar</button>    
 </form>
