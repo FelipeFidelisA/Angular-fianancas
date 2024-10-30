@@ -2,9 +2,12 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 import { Observable, throwError } from 'rxjs';
-import { map, catchError, flatMap } from 'rxjs/operators';
+import { map, catchError, flatMap, switchMap } from 'rxjs/operators';
+
+import { CategoryService } from '../../categories/shared/category.service'
 
 import { Entry } from './entry.model';
+import { Category } from '../../categories/shared/category.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +16,7 @@ export class EntryService {
 
   private apiPath: string = 'api/entries';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private categoryService: CategoryService) { }
 
   getAll(): Observable<Entry[]> {
     return this.http.get<Entry[]>(this.apiPath).pipe(
@@ -32,17 +35,39 @@ export class EntryService {
   }
 
   create(entry: Entry): Observable<Entry> {
-    return this.http.post(this.apiPath, entry).pipe(
-      catchError(this.handleError),
-      map(this.jsonDataToEntry)
+
+    if (entry.categoryId === undefined) {
+      return throwError(() => new Error('O campo categoryId é obrigatório.'));
+    }
+
+    return this.categoryService.getById(entry.categoryId).pipe(
+      switchMap(category => {
+        entry.category = category;
+
+        return this.http.post(this.apiPath, entry).pipe(
+          catchError(this.handleError),
+          map(this.jsonDataToEntry)
+        );
+      })
     );
+
   }
 
   update(entry: Entry): Observable<Entry> {
     const url = `${this.apiPath}/${entry.id}`;
-    return this.http.put(url, entry).pipe(
-      catchError(this.handleError),
-      map(()=> entry)
+  
+    if (entry.categoryId === undefined) {
+      return throwError(() => new Error('O campo categoryId é obrigatório.'));
+    }
+  
+    return this.categoryService.getById(entry.categoryId).pipe(
+      switchMap(category => {
+        entry.category = category;
+        return this.http.put<Entry>(url, entry).pipe(
+          map(() => entry),
+          catchError(this.handleError)
+        );
+      })
     );
   }
 
@@ -50,7 +75,7 @@ export class EntryService {
     const url = `${this.apiPath}/${id}`;
     return this.http.delete(url).pipe(
       catchError(this.handleError),
-      map(()=> null)
+      map(() => null)
     );
   }
 
@@ -58,7 +83,7 @@ export class EntryService {
 
   private jsonDataToEntries(jsonData: any[]): Entry[] {
     const entries: Entry[] = [];
-    
+
     jsonData.forEach(element => entries.push(element as Entry));
     return entries;
   }

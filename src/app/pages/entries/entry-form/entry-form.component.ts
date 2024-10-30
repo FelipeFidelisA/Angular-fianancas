@@ -68,7 +68,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     this.submitting = true;
 
     if (this.entryForm.invalid) {
-      this.submitting = false; // Permite que o botão seja ativado novamente
+      this.submitting = false;
       toastr.error('Por favor, preencha todos os campos obrigatórios corretamente.');
       return;
     }
@@ -96,7 +96,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
       id: [null],
       name: ['', [Validators.required, Validators.minLength(2)]],
       description: [null],
-      type: [null, [Validators.required]], // Tipo pode ser deixado em branco
+      type: [null, [Validators.required]], 
       amount: [null, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
       date: [null, [Validators.required]],
       paid: [true, [Validators.required]],
@@ -129,11 +129,11 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
 
   private createEntry() {
     const entry: Entry = {
-      ...this.entryForm.value, // Espalha os valores do formulário
-      id: 0 // ID deve ser 0 para nova entrada
+      ...this.entryForm.value, 
+      id: 0 
     };
 
-    console.log("Creating Entry:", entry); // Debugging
+    console.log("Creating Entry:", entry);
     this.entryService.create(entry).subscribe(
       (createdEntry) => this.actionForSuccess(createdEntry),
       (error) => this.actionsForError(error)
@@ -143,10 +143,10 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   private updateEntry() {
     const entry: Entry = {
       ...this.entryForm.value,
-      id: this.entry.id // Atribui o ID da entrada atual
+      id: this.entry.id
     };
 
-    console.log("Updating Entry:", entry); // Debugging
+    console.log("Updating Entry:", entry);
     this.entryService.update(entry).subscribe(
       () => this.actionForSuccess(entry),
       (error) => this.actionsForError(error)
@@ -155,19 +155,19 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
 
   private actionForSuccess(entry: Entry) {
     toastr.success(`Lançamento ${entry.name} foi processado com sucesso!`);
-    this.serverErrorMessages = null; // Limpa mensagens de erro
+    this.serverErrorMessages = null;
     this.router.navigateByUrl('entries', { skipLocationChange: true }).then(
       () => this.router.navigate(["entries", entry.id, 'edit'])
     );
   }
 
   private actionsForError(error: any) {
-    console.error('Error occurred:', error); // Log do erro
+    console.error('Error occurred:', error);
     toastr.error('Ocorreu um Erro ao tentar a sua solicitação!');
     this.submitting = false;
 
     if (error.status === 422) {
-      this.serverErrorMessages = JSON.parse(error.error).errors; // Verifique a propriedade correta
+      this.serverErrorMessages = JSON.parse(error.error).errors; 
     } else {
       this.serverErrorMessages = ['Falha na comunicação com o servidor. Por favor, tente novamente mais tarde.'];
     }
