@@ -4,13 +4,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Entry } from '../shared/entry.model';
 import { EntryService } from '../shared/entry.service';
 import * as toastr from 'toastr';
+import { Category } from '../../categories/shared/category.model';
+import { CategoryService } from '../../categories/shared/category.service';
 
 @Component({
   selector: 'app-entry-form',
   templateUrl: './entry-form.component.html',
   styleUrls: ['./entry-form.component.css']
 })
-
 export class EntryFormComponent implements OnInit, AfterContentChecked {
   currentAction: string = '';
   entryForm!: FormGroup;
@@ -18,6 +19,7 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   serverErrorMessages: string[] | null = null;
   submitting: boolean = false;
   entry!: Entry;
+  categories: Array<Category> = [];
 
   maskConfig = {
     mask: 'R$ 000.000,00',
@@ -29,22 +31,33 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     dayNamesShort: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
     dayNamesMin: ['Do', 'Se', 'Te', 'Qu', 'Qu', 'Se', 'Sa'],
     monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
-    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+    monthNamesShort: ['Jan', 'Fev', 'Mar', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
     today: 'Hoje',
     clear: 'Limpar'
-};
+  };
 
   constructor(
     private entryService: EntryService,
     private router: Router,
     private formBuilder: FormBuilder,
-    private route: ActivatedRoute
-  ) { }
+    private route: ActivatedRoute,
+    private categoryService: CategoryService
+  ) {}
 
   ngOnInit(): void {
     this.setCurrentAction();
     this.buildEntryForm();
-    this.loadCategories();
+    if (this.currentAction === 'edit') {
+      const idParam = this.route.snapshot.paramMap.get('id');
+      if (idParam) {
+        const id = +idParam; 
+        this.loadEntry(id);
+      } else {
+        toastr.error('ID da entrada não encontrado.');
+        this.router.navigate(['/entries']);
+      }
+    }
+    this.loadCategories(); 
   }
 
   ngAfterContentChecked(): void {
@@ -53,11 +66,25 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
 
   submitForm() {
     this.submitting = true;
-    if (this.currentAction == 'new') {
+
+    if (this.entryForm.invalid) {
+      this.submitting = false; // Permite que o botão seja ativado novamente
+      toastr.error('Por favor, preencha todos os campos obrigatórios corretamente.');
+      return;
+    }
+
+    if (this.currentAction === 'new') {
       this.createEntry();
     } else {
       this.updateEntry();
     }
+  }
+
+  get typeOptions(): Array<any> {
+    return [
+      { value: 'expense', text: 'Despesa' },
+      { value: 'revenue', text: 'Receita' }
+    ];
   }
 
   private setCurrentAction() {
@@ -69,41 +96,44 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
       id: [null],
       name: ['', [Validators.required, Validators.minLength(2)]],
       description: [null],
-      type: [null, [Validators.required]],
+      type: [null, [Validators.required]], // Tipo pode ser deixado em branco
       amount: [null, [Validators.required, Validators.pattern(/^[0-9]*$/)]],
       date: [null, [Validators.required]],
-      paid: [null, [Validators.required]],
+      paid: [true, [Validators.required]],
       categoryId: [null, [Validators.required]]
     });
   }
 
+  private loadEntry(id: number) {
+    this.entryService.getById(id).subscribe(
+      (entry) => {
+        this.entry = entry;
+        this.entryForm.patchValue(entry);
+      },
+      (error) => toastr.error('Erro ao carregar a entrada.')
+    );
+  }
+  
   private loadCategories() {
-    if (this.currentAction === 'edit') {
-      const idParam = this.route.snapshot.paramMap.get('id');
-      if (idParam) {
-        const id = +idParam;
-        this.entryService.getById(id).subscribe(
-          (entry) => {
-            this.entry = entry;
-            this.entryForm.patchValue(entry);
-          },
-          (error) => toastr.error('Erro ao carregar a categoria.')
-        );
-      } else {
-        toastr.error('ID da categoria não encontrado.');
-        this.router.navigate(['/entries']);
-      }
-    }
+    this.categoryService.getAll().subscribe(
+      (categories) => this.categories = categories,
+      (error) => toastr.error('Erro ao carregar as categorias.')
+    );
   }
 
   private setPageTitle() {
     this.pageTitle = this.currentAction === 'new'
       ? 'Cadastro de novo lançamento'
-      : `Editando Lançamento: ${this.entry.name}`;
+      : `Editando Lançamento: ${this.entry ? this.entry.name : 'Entrada Desconhecida'}`;
   }
 
   private createEntry() {
-    const entry: Entry = Object.assign(new Entry(0, '', ''), this.entryForm.value);
+    const entry: Entry = {
+      ...this.entryForm.value, // Espalha os valores do formulário
+      id: 0 // ID deve ser 0 para nova entrada
+    };
+
+    console.log("Creating Entry:", entry); // Debugging
     this.entryService.create(entry).subscribe(
       (createdEntry) => this.actionForSuccess(createdEntry),
       (error) => this.actionsForError(error)
@@ -111,7 +141,12 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private updateEntry() {
-    const entry: Entry = Object.assign(new Entry(0, '', ''), this.entryForm.value);
+    const entry: Entry = {
+      ...this.entryForm.value,
+      id: this.entry.id // Atribui o ID da entrada atual
+    };
+
+    console.log("Updating Entry:", entry); // Debugging
     this.entryService.update(entry).subscribe(
       () => this.actionForSuccess(entry),
       (error) => this.actionsForError(error)
@@ -127,11 +162,12 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private actionsForError(error: any) {
+    console.error('Error occurred:', error); // Log do erro
     toastr.error('Ocorreu um Erro ao tentar a sua solicitação!');
     this.submitting = false;
 
-    if (error.status == 422) {
-      this.serverErrorMessages = JSON.parse(error._body).errors;
+    if (error.status === 422) {
+      this.serverErrorMessages = JSON.parse(error.error).errors; // Verifique a propriedade correta
     } else {
       this.serverErrorMessages = ['Falha na comunicação com o servidor. Por favor, tente novamente mais tarde.'];
     }
