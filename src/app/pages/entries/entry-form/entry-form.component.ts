@@ -80,12 +80,18 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
     }
   }
 
-  get typeOptions(): Array<any> {
+
+  get typeOptions(): Array<{ value: string, text: string }> {
     return [
       { value: 'expense', text: 'Despesa' },
       { value: 'revenue', text: 'Receita' }
     ];
   }
+
+  onTypeChange(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    console.log("Valor selecionado:", selectElement.value);
+}
 
   private setCurrentAction() {
     this.currentAction = this.route.snapshot.paramMap.get('id') ? 'edit' : 'new';
@@ -132,8 +138,6 @@ export class EntryFormComponent implements OnInit, AfterContentChecked {
       ...this.entryForm.value, 
       id: 0 
     };
-
-    console.log("Creating Entry:", entry);
     this.entryService.create(entry).subscribe(
       (createdEntry) => this.actionForSuccess(createdEntry),
       (error) => this.actionsForError(error)
