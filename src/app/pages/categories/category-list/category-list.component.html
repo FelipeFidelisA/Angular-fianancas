@@ -1,39 +1,32 @@
-<nav class="mb-5">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a routerLink="/">Home</a></li>
-        <li class="breadcrumb-item active">Categorias</li>
-    </ol>
-</nav>
+<app-bread-crumb
+  [items]="[{text: 'Categorias'}]"
+></app-bread-crumb>
 
-<div class="row mb-4">
-    <div class="col-md">
-        <h1 class="h2 border-left pl-2">
-            Categorias
-        </h1>
-    </div>
-    <div class="col-md d-flex justify-content-end">
-        <a routerLink="new" class="btn btn-success float-right">+ Nova categoria</a>
-    </div>
-</div>
+<app-page-header
+  page-title="Categorias"
+  button-text="+ Nova Categoria"
+  button-link="new"
+  button-class="btn-success"
+></app-page-header>
+
 
 <table class="table table-hover">
-    <thead>
-        <tr class="bg-primary text-white">
-            <th>Categoria</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let category of categories">
-            <td>
-                <strong>{{category.name}}</strong><br>
-                <small>{{category.description}}</small>
-            </td>
-            <td>
-                <button [routerLink]="[category.id, 'edit']" class="btn btn-outline-info btn-sm ">Editar</button>
-                <button (click)="deleteCategory(category)" class="btn btn-outline-danger btn-sm ms-2">Excluir </button>
-            </td>
-        </tr>
-
-    </tbody>
+  <thead>
+    <tr class="bg-primary text-light">
+      <th>Categoria</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let category of resources">
+      <td>
+        <strong>{{category.name}}</strong><br>
+        <small>{{category.description}}</small>
+      </td>
+      <td>
+        <a [routerLink]="[category.id, 'edit']" class="btn btn-outline-info btn-sm mr-2">Editar</a>
+        <button (click)="deleteResource(category)" class="btn btn-outline-danger btn-sm">Excluir</button>
+      </td>
+    </tr>
+  </tbody>
 </table>

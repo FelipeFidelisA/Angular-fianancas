@@ -1,31 +1,22 @@
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 
-import { CoreModule } from './core/core.module';
+import { NgxMaskModule } from 'ngx-mask';
 
+import { CoreModule } from "./core/core.module";
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { EntryListComponent } from './pages/entries/entry-list/entry-list.component';
-import { Router, RouterModule } from '@angular/router';
-import { EntryFormComponent } from './pages/entries/entry-form/entry-form.component';
-
-import { CalendarModule } from 'primeng/calendar';
-import { NgxMaskModule } from 'ngx-mask';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    EntryListComponent,
-    EntryFormComponent,
+    AppComponent
   ],
   imports: [
-    RouterModule.forRoot([]),
-    AppRoutingModule,
     CoreModule,
-    ReactiveFormsModule,
-    CalendarModule,
-    NgxMaskModule,
+    NgxMaskModule.forRoot(),
+    AppRoutingModule,
+    ChartModule
   ],
   providers: [],
   bootstrap: [AppComponent]
