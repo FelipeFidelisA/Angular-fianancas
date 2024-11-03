@@ -43,6 +43,11 @@
           <option value="2018">2018</option>
           <option value="2019">2019</option>
           <option value="2020">2020</option>
+          <option value="2021">2021</option>
+          <option value="2022">2022</option>
+          <option value="2023">2023</option>
+          <option value="2024">2024</option>
+
         </select>
       </div>
     </div>
@@ -57,40 +62,35 @@
   </div>
 </div>
 
-<div class="card-deck mt-5 mb-5">
-  <div class="card text-center text-white bg-success">
-    <div class="card-header">
-      TOTAL DE RECEITAS
-    </div>
-    <div class="card-body">
-      <h3 class="card-title">
-        {{revenueTotal}}
-      </h3>
+<div class="row mt-5 mb-5 text-center">
+  <div class="col-md-4">
+    <div class="card text-white bg-success">
+      <div class="card-header">TOTAL DE RECEITAS</div>
+      <div class="card-body">
+        <h3 class="card-title">{{revenueTotal}}</h3>
+      </div>
     </div>
   </div>
 
-  <div class="card text-center text-white bg-danger">
-    <div class="card-header">
-      TOTAL DE DESPESAS
-    </div>
-    <div class="card-body">
-      <h3 class="card-title">
-        {{expenseTotal}}
-      </h3>
+  <div class="col-md-4">
+    <div class="card text-white bg-danger">
+      <div class="card-header">TOTAL DE DESPESAS</div>
+      <div class="card-body">
+        <h3 class="card-title">{{expenseTotal}}</h3>
+      </div>
     </div>
   </div>
 
-  <div class="card text-center text-white bg-info">
-    <div class="card-header">
-      SALDO
-    </div>
-    <div class="card-body">
-      <h3 class="card-title">
-        {{balance}}
-      </h3>
+  <div class="col-md-4">
+    <div class="card text-white bg-info">
+      <div class="card-header">SALDO</div>
+      <div class="card-body">
+        <h3 class="card-title">{{balance}}</h3>
+      </div>
     </div>
   </div>
 </div>
+
 
 <hr>
 
