@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../../shared/shared.module';
 
 import { EntriesRoutingModule } from './entries-routing.module';
 
@@ -12,11 +11,12 @@ import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   declarations: [
+    EntryListComponent,
+    EntryFormComponent,
   ],
   imports: [
-    CommonModule,
+    SharedModule,
     EntriesRoutingModule,
-    ReactiveFormsModule,
     CalendarModule,
     NgxMaskModule.forRoot(),
   ],
